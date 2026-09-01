@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="fa" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GTA VI Countdown · 2023–2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: #0a0a0f;
+            font-family: 'Segoe UI', 'Poppins', 'Inter', system-ui, -apple-system, 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-height: 100vh;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .timer-app {
+            width: 100%;
+            height: 100vh;
+            max-width: 1080px;
+            background: #0a0a0f;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 5vh 5vw 4vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .timer-app::-webkit-scrollbar {
+            display: none;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2vh;
+        }
+
+        .card {
+            background: #14141e;
+            border-radius: 28px;
+            backdrop-filter: blur(2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes softPulse {
+            0% { border-color: rgba(255, 45, 85, 0.3); box-shadow: 0 0 0 0 rgba(255, 45, 85, 0.2); }
+            50% { border-color: rgba(255, 45, 85, 0.9); box-shadow: 0 0 12px 0 rgba(255, 45, 85, 0.6); }
+            100% { border-color: rgba(255, 45, 85, 0.3); box-shadow: 0 0 0 0 rgba(255, 45, 85, 0); }
+        }
+
+        .pulse-border {
+            animation: softPulse 1.8s infinite ease-in-out;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ff2d55, #912dff);
+            border-radius: 30px;
+            transition: width 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        .end-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #0a0a0f 0%, #010101 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(16px);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .pulse-text {
+            animation: textPulse 1.4s infinite ease-in-out;
+        }
+
+        @keyframes textPulse {
+            0% { opacity: 0.5; text-shadow: 0 0 0px #ff2d55; }
+            50% { opacity: 1; text-shadow: 0 0 18px #ff2d55; }
+            100% { opacity: 0.5; text-shadow: 0 0 0px #ff2d55; }
+        }
+
+        .font-huge { font-size: clamp(3rem, 11vw, 5.6rem); font-weight: 800; letter-spacing: 2px; line-height: 1.1; }
+        .font-large { font-size: clamp(2rem, 8vw, 3.8rem); font-weight: 700; }
+        .font-medium { font-size: clamp(1.3rem, 4.8vw, 2rem); font-weight: 600; }
+        .font-small { font-size: clamp(0.85rem, 3.5vw, 1.2rem); font-weight: 500; letter-spacing: 1px; }
+        .font-tiny { font-size: clamp(0.7rem, 2.8vw, 0.9rem); font-weight: 400; letter-spacing: 0.5px; }
+
+        .text-accent { color: #ff2d55; }
+        .text-secondary-accent { color: #912dff; }
+        .text-white { color: #ffffff; }
+        .text-gray { color: #a0a0b0; }
+
+        .cards-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px;
+            margin: 1.2vh 0;
+        }
+
+        .day-card-big {
+            background: #14141e;
+            border-radius: 48px;
+            padding: 3vh 0.5rem;
+            text-align: center;
+            width: 90%;
+            margin: 0.5vh auto 0.5vh;
+            border: 1px solid rgba(255, 45, 85, 0.4);
+        }
+
+        .mini-card {
+            flex: 1;
+            min-width: 100px;
+            padding: 2vh 0.5rem;
+            text-align: center;
+            border-width: 2px;
+            border-style: solid;
+            background: #14141e;
+            border-radius: 28px;
+        }
+
+        .large-card {
+            flex: 1;
+            min-width: 100px;
+            padding: 2.8vh 0.5rem;
+            text-align: center;
+            border-width: 3px;
+            border-style: solid;
+            background: #14141e;
+            border-radius: 36px;
+        }
+
+        .progress-wrapper {
+            margin: 1.8vh auto 1vh;
+            width: 92%;
+        }
+
+        .progress-bg {
+            background: #282835;
+            border-radius: 40px;
+            height: 26px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .percent-label {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        button {
+            background: #ff2d55;
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 14px 34px;
+            border-radius: 48px;
+            font-size: 1.1rem;
+            margin-top: 32px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 12px rgba(255, 45, 85, 0.3);
+        }
+
+        button:hover {
+            background: #e61e45;
+            transform: scale(1.02);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .end-message-main {
+            font-size: clamp(1.6rem, 6vw, 2.5rem);
+            font-weight: 700;
+            margin: 1rem 0 0.5rem;
+        }
+        
+        .end-credit {
+            margin-top: 2rem;
+            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+            color: #bbb;
+            background: rgba(255,255,255,0.05);
+            padding: 12px 20px;
+            border-radius: 60px;
+            backdrop-filter: blur(4px);
+        }
+        
+        .end-credit a {
+            color: #ff7b9c;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dotted #ff7b9c;
+        }
+        
+        .end-credit a:hover {
+            color: #ff2d55;
+        }
+    </style>
+</head>
+<body>
+
+<div class="timer-app" id="timerApp">
+    <div class="content-wrapper">
+        <div id="titleSection">
+            <div class="font-medium text-accent" style="text-align: center;
+            letter-spacing: 3px;"> GTA VI COUNTDOWN</div>
+            <div class="font-tiny text-secondary-accent" style="text-align:
+            center; margin-top: 8px;"></div>
+        </div>
+
+        <div id="daysPositiveView">
+            <div class="day-card-big">
+                <div class="font-huge text-white" id="daysValue">0</div>
+                <div class="font-small text-accent" style="margin-top: 6px;">DAYS LEFT</div>
+            </div>
+
+            <div class="cards-row">
+                <div class="mini-card" style="border-color: #ff6464;">
+                    <div class="font-medium" style="color: #ff6464;" id="hoursTotalValue">0</div>
+                    <div class="font-tiny text-white" style="margin-top: 8px;">HOURS</div>
+                </div>
+                <div class="mini-card" style="border-color: #64ff96;">
+                    <div class="font-medium" style="color: #64ff96;" id="minutesValue">00</div>
+                    <div class="font-tiny text-white" style="margin-top: 8px;">MINUTES</div>
+                </div>
+                <div class="mini-card" style="border-color: #6496ff;">
+                    <div class="font-medium" style="color: #6496ff;" id="secondsValue">00</div>
+                    <div class="font-tiny text-white" style="margin-top: 8px;">SECONDS</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="daysZeroView" class="hidden">
+            <div class="cards-row" style="margin-top: 2vh;">
+                <div class="large-card" style="border-color: #ff6464;">
+                    <div class="font-large" style="color: #ff6464;" id="hoursTotalZero">0</div>
+                    <div class="font-small text-white" style="margin-top: 10px;">HOURS</div>
+                </div>
+                <div class="large-card" style="border-color: #64ff96;">
+                    <div class="font-large" style="color: #64ff96;" id="minutesZero">00</div>
+                    <div class="font-small text-white" style="margin-top: 10px;">MINUTES</div>
+                </div>
+                <div class="large-card" style="border-color: #6496ff;">
+                    <div class="font-large" style="color: #6496ff;" id="secondsZero">00</div>
+                    <div class="font-small text-white" style="margin-top: 10px;">SECONDS</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-wrapper">
+            <div class="progress-bg pulse-border" id="progressBg">
+                <div class="progress-fill" id="progressFill" style="width: 0%; height: 100%;"></div>
+            </div>
+            <div class="percent-label font-small text-white" id="percentText">0.00%</div>
+        </div>
+
+        <div id="datesFooter" class="font-tiny text-gray" style="text-align: center;">
+            <span>🕒 DEC 4, 2023 → NOV 19, 2026</span>
+        </div>
+    </div>
+</div>
+
+<div id="endScreen" class="end-overlay" style="display: none;">
+    <div class="font-huge text-white" style="margin-bottom: 8px; text-align: center;">🎮 GTA VI</div>
+    <div class="end-message-main pulse-text" style="color: #ff2d55; font-weight: 800;">released countdown is done...</div>
+    <div class="end-credit">
+        this countdown created by <a href="https://instagram.com/whatsmusic.page" target="_blank" rel="noopener noreferrer">@whatsmusic.page</a>
+    </div>
+    <button id="refreshBtn">⟳ Refresh Timer</button>
+    <p style="color:#6a6a7c; margin-top: 36px; font-size: 0.7rem;">countdown finished — page will refresh after click</p>
+</div>
+
+<script>
+    (function() {
+        // =====================================================
+        // راه‌حل قطعی مشکل تایم‌زون (Timezone)
+        // ساخت تاریخ به صورت UTC و تبدیل به محلی
+        // =====================================================
+        
+        function createLocalDate(year, month, day) {
+            // ماه از 0 شروع می‌شود: 11 = December, 10 = November
+            return new Date(year, month, day, 0, 0, 0);
+        }
+        
+        //شروع
+        const START_DATE = createLocalDate(2023, 11, 4);
+        // پایان
+        const END_DATE = createLocalDate(2026, 10, 19);
+        
+        const TOTAL_DURATION_MS = END_DATE - START_DATE;
+        
+        // DOM elements
+        const daysPositiveView = document.getElementById('daysPositiveView');
+        const daysZeroView = document.getElementById('daysZeroView');
+        const titleSection = document.getElementById('titleSection');
+        const datesFooter = document.getElementById('datesFooter');
+        const progressFill = document.getElementById('progressFill');
+        const percentSpan = document.getElementById('percentText');
+        const progressBgDiv = document.getElementById('progressBg');
+        
+        const daysValueSpan = document.getElementById('daysValue');
+        const hoursTotalSpan = document.getElementById('hoursTotalValue');
+        const minutesSpan = document.getElementById('minutesValue');
+        const secondsSpan = document.getElementById('secondsValue');
+        
+        const hoursTotalZeroSpan = document.getElementById('hoursTotalZero');
+        const minutesZeroSpan = document.getElementById('minutesZero');
+        const secondsZeroSpan = document.getElementById('secondsZero');
+        
+        const endScreenDiv = document.getElementById('endScreen');
+        const timerAppDiv = document.getElementById('timerApp');
+        
+        let intervalId = null;
+        let isFinished = false;
+        
+        function formatRemaining(remainingSeconds) {
+            if (remainingSeconds < 0) remainingSeconds = 0;
+            const days = Math.floor(remainingSeconds / 86400);
+            const totalHours = Math.floor(remainingSeconds / 3600);
+            const minutes = Math.floor((remainingSeconds % 3600) / 60);
+            const seconds = Math.floor(remainingSeconds % 60);
+            return { days, totalHours, minutes, seconds };
+        }
+        
+        function calcProgress(now) {
+            if (now <= START_DATE) return 0.0;
+            if (now >= END_DATE) return 1.0;
+            const elapsed = now - START_DATE;
+            let progress = elapsed / TOTAL_DURATION_MS;
+            return Math.min(1.0, Math.max(0.0, progress));
+        }
+        
+        function updateTimer() {
+            if (isFinished) return;
+            
+            const now = new Date(); // زمان فعلی محلی
+            
+            // بررسی پایان کانت‌داون
+            if (now >= END_DATE) {
+                isFinished = true;
+                if (intervalId) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                }
+                timerAppDiv.style.display = 'none';
+                endScreenDiv.style.display = 'flex';
+                return;
+            }
+            
+            // محاسبه زمان باقی‌مانده
+            let remainingMs = END_DATE - now;
+            if (remainingMs < 0) remainingMs = 0;
+            const remainingSec = remainingMs / 1000;
+            const { days, totalHours, minutes, seconds } = formatRemaining(remainingSec);
+            
+            // محاسبه درصد پیشرفت
+            const progressRaw = calcProgress(now);
+            const percentValue = (progressRaw * 100).toFixed(2);
+            progressFill.style.width = `${progressRaw * 100}%`;
+            percentSpan.innerText = `${percentValue}%`;
+            
+            // نمایش یا عدم نمایش ویو مخصوص روز صفر
+            const isDaysZero = (days === 0);
+            
+            if (!isDaysZero) {
+                // حالت عادی: روزها بیشتر از صفر
+                daysPositiveView.classList.remove('hidden');
+                daysZeroView.classList.add('hidden');
+                titleSection.classList.remove('hidden');
+                datesFooter.classList.remove('hidden');
+                
+                daysValueSpan.innerText = days.toLocaleString();
+                hoursTotalSpan.innerText = totalHours.toLocaleString();
+                minutesSpan.innerText = minutes.toString().padStart(2, '0');
+                secondsSpan.innerText = seconds.toString().padStart(2, '0');
+            } 
+            else {
+                // حالت ویژه: روز صفر (کمتر از 24 ساعت مونده)
+                daysPositiveView.classList.add('hidden');
+                daysZeroView.classList.remove('hidden');
+                titleSection.classList.add('hidden');
+                datesFooter.classList.add('hidden');
+                
+                hoursTotalZeroSpan.innerText = totalHours.toLocaleString();
+                minutesZeroSpan.innerText = minutes.toString().padStart(2, '0');
+                secondsZeroSpan.innerText = seconds.toString().padStart(2, '0');
+            }
+        }
+        
+        // دکمه Refresh در صفحه پایان
+        function initButtons() {
+            const refreshBtn = document.getElementById('refreshBtn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function() {
+                    window.location.reload();
+                });
+            }
+        }
+        
+        function startTimer() {
+            updateTimer(); // اجرای سریع برای نمایش اولیه
+            intervalId = setInterval(updateTimer, 1000);
+        }
+        
+        // اضافه کردن کلاس انیمیشن به نوار پیشرفت
+        if (progressBgDiv) {
+            progressBgDiv.classList.add('pulse-border');
+        }
+        
+        // غیرفعال کردن کامل دکمه ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' || e.key === 'Esc') {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        });
+        
+        // شروع تایمر پس از لود کامل صفحه
+        window.addEventListener('load', function() {
+            initButtons();
+            startTimer();
+        });
+        
+        // نمایش خطا در کنسول برای دیباگ (اختیاری)
+        console.log('Countdown started:', {
+            start: START_DATE.toString(),
+            end: END_DATE.toString(),
+            totalDays: TOTAL_DURATION_MS / 86400000
+        });
+    })();
+</script>
+</body>
+</html>
