@@ -1,464 +1,1656 @@
 <!DOCTYPE html>
-<html lang="fa" dir="ltr">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GTA VI Countdown · 2023–2026</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#06030d">
 
-        body {
-            background: #0a0a0f;
-            font-family: 'Segoe UI', 'Poppins', 'Inter', system-ui, -apple-system, 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            min-height: 100vh;
-            overflow: hidden;
-            position: fixed;
-            top: 0;
-            left: 0;
-        }
+<title>GTA VI · Countdown</title>
 
-        .timer-app {
-            width: 100%;
-            height: 100vh;
-            max-width: 1080px;
-            background: #0a0a0f;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 5vh 5vw 4vh;
-            overflow-y: auto;
-            overflow-x: hidden;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-        
-        .timer-app::-webkit-scrollbar {
-            display: none;
-        }
+<style>
+*,
+*::before,
+*::after{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
 
-        .content-wrapper {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 2vh;
-        }
+html,
+body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
 
-        .card {
-            background: #14141e;
-            border-radius: 28px;
-            backdrop-filter: blur(2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
+body{
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Inter",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
 
-        @keyframes softPulse {
-            0% { border-color: rgba(255, 45, 85, 0.3); box-shadow: 0 0 0 0 rgba(255, 45, 85, 0.2); }
-            50% { border-color: rgba(255, 45, 85, 0.9); box-shadow: 0 0 12px 0 rgba(255, 45, 85, 0.6); }
-            100% { border-color: rgba(255, 45, 85, 0.3); box-shadow: 0 0 0 0 rgba(255, 45, 85, 0); }
-        }
+    background:#06030d;
+    color:#fff;
 
-        .pulse-border {
-            animation: softPulse 1.8s infinite ease-in-out;
-        }
+    display:flex;
+    justify-content:center;
+    align-items:center;
 
-        .progress-fill {
-            background: linear-gradient(90deg, #ff2d55, #912dff);
-            border-radius: 30px;
-            transition: width 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+}
 
-        .end-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(145deg, #0a0a0f 0%, #010101 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(16px);
-            text-align: center;
-            padding: 2rem;
-        }
 
-        .pulse-text {
-            animation: textPulse 1.4s infinite ease-in-out;
-        }
+/* ============================================================
+   VICE CITY STATIC SKY
+============================================================ */
 
-        @keyframes textPulse {
-            0% { opacity: 0.5; text-shadow: 0 0 0px #ff2d55; }
-            50% { opacity: 1; text-shadow: 0 0 18px #ff2d55; }
-            100% { opacity: 0.5; text-shadow: 0 0 0px #ff2d55; }
-        }
+.sky{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    overflow:hidden;
 
-        .font-huge { font-size: clamp(3rem, 11vw, 5.6rem); font-weight: 800; letter-spacing: 2px; line-height: 1.1; }
-        .font-large { font-size: clamp(2rem, 8vw, 3.8rem); font-weight: 700; }
-        .font-medium { font-size: clamp(1.3rem, 4.8vw, 2rem); font-weight: 600; }
-        .font-small { font-size: clamp(0.85rem, 3.5vw, 1.2rem); font-weight: 500; letter-spacing: 1px; }
-        .font-tiny { font-size: clamp(0.7rem, 2.8vw, 0.9rem); font-weight: 400; letter-spacing: 0.5px; }
+    background:
+        linear-gradient(
+            180deg,
+            #06030d 0%,
+            #0b0418 34%,
+            #26082d 62%,
+            #12051c 100%
+        );
+}
 
-        .text-accent { color: #ff2d55; }
-        .text-secondary-accent { color: #912dff; }
-        .text-white { color: #ffffff; }
-        .text-gray { color: #a0a0b0; }
+/* pink / purple atmosphere */
 
-        .cards-row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 14px;
-            margin: 1.2vh 0;
-        }
+.sky::before{
+    content:"";
 
-        .day-card-big {
-            background: #14141e;
-            border-radius: 48px;
-            padding: 3vh 0.5rem;
-            text-align: center;
-            width: 90%;
-            margin: 0.5vh auto 0.5vh;
-            border: 1px solid rgba(255, 45, 85, 0.4);
-        }
+    position:absolute;
 
-        .mini-card {
-            flex: 1;
-            min-width: 100px;
-            padding: 2vh 0.5rem;
-            text-align: center;
-            border-width: 2px;
-            border-style: solid;
-            background: #14141e;
-            border-radius: 28px;
-        }
+    left:50%;
+    bottom:-35%;
 
-        .large-card {
-            flex: 1;
-            min-width: 100px;
-            padding: 2.8vh 0.5rem;
-            text-align: center;
-            border-width: 3px;
-            border-style: solid;
-            background: #14141e;
-            border-radius: 36px;
-        }
+    width:160%;
+    height:95%;
 
-        .progress-wrapper {
-            margin: 1.8vh auto 1vh;
-            width: 92%;
-        }
+    transform:translateX(-50%);
 
-        .progress-bg {
-            background: #282835;
-            border-radius: 40px;
-            height: 26px;
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-            border: 2px solid transparent;
-        }
+    background:
+        radial-gradient(
+            ellipse 45% 50% at 50% 45%,
+            rgba(255,45,120,.72) 0%,
+            transparent 60%
+        ),
 
-        .percent-label {
-            text-align: center;
-            margin-top: 10px;
-            font-weight: 600;
-        }
+        radial-gradient(
+            ellipse 55% 60% at 50% 52%,
+            rgba(255,95,145,.42) 0%,
+            transparent 58%
+        ),
 
-        button {
-            background: #ff2d55;
-            border: none;
-            color: white;
-            font-weight: bold;
-            padding: 14px 34px;
-            border-radius: 48px;
-            font-size: 1.1rem;
-            margin-top: 32px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: all 0.2s ease;
-            box-shadow: 0 5px 12px rgba(255, 45, 85, 0.3);
-        }
+        radial-gradient(
+            ellipse 70% 75% at 50% 60%,
+            rgba(168,85,247,.45) 0%,
+            transparent 60%
+        );
 
-        button:hover {
-            background: #e61e45;
-            transform: scale(1.02);
-        }
+    filter:blur(75px);
+}
 
-        .hidden {
-            display: none;
-        }
+/* cyan atmosphere */
 
-        .end-message-main {
-            font-size: clamp(1.6rem, 6vw, 2.5rem);
-            font-weight: 700;
-            margin: 1rem 0 0.5rem;
-        }
-        
-        .end-credit {
-            margin-top: 2rem;
-            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
-            color: #bbb;
-            background: rgba(255,255,255,0.05);
-            padding: 12px 20px;
-            border-radius: 60px;
-            backdrop-filter: blur(4px);
-        }
-        
-        .end-credit a {
-            color: #ff7b9c;
-            text-decoration: none;
-            font-weight: 600;
-            border-bottom: 1px dotted #ff7b9c;
-        }
-        
-        .end-credit a:hover {
-            color: #ff2d55;
-        }
-    </style>
+.sky::after{
+    content:"";
+
+    position:absolute;
+
+    left:-25%;
+    top:-25%;
+
+    width:80%;
+    height:80%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(8,145,178,.38) 0%,
+            transparent 60%
+        );
+
+    filter:blur(95px);
+}
+
+
+/* right cyan glow */
+
+.sky-glow{
+    position:absolute;
+
+    right:-30%;
+    top:-20%;
+
+    width:75%;
+    height:75%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(34,211,238,.30) 0%,
+            transparent 60%
+        );
+
+    filter:blur(100px);
+}
+
+
+/* cinematic vignette */
+
+.vignette{
+    position:absolute;
+    inset:0;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 45%,
+            transparent 25%,
+            rgba(6,3,13,.35) 65%,
+            rgba(6,3,13,.82) 100%
+        );
+
+    pointer-events:none;
+}
+
+
+/* ============================================================
+   SUBTLE CITY SILHOUETTE
+============================================================ */
+
+.city{
+    position:absolute;
+
+    left:0;
+    right:0;
+    bottom:0;
+
+    height:34%;
+
+    opacity:.42;
+
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-around;
+}
+
+.building{
+    position:relative;
+
+    background:
+        linear-gradient(
+            90deg,
+            #05030a,
+            #10091a,
+            #05030a
+        );
+
+    border-top:1px solid rgba(255,255,255,.05);
+
+    box-shadow:
+        0 -15px 50px rgba(255,0,120,.08);
+}
+
+.building:nth-child(1){
+    width:9%;
+    height:48%;
+}
+
+.building:nth-child(2){
+    width:13%;
+    height:76%;
+}
+
+.building:nth-child(3){
+    width:10%;
+    height:58%;
+}
+
+.building:nth-child(4){
+    width:17%;
+    height:91%;
+}
+
+.building:nth-child(5){
+    width:9%;
+    height:67%;
+}
+
+.building:nth-child(6){
+    width:15%;
+    height:82%;
+}
+
+.building:nth-child(7){
+    width:11%;
+    height:53%;
+}
+
+.building:nth-child(8){
+    width:15%;
+    height:73%;
+}
+
+
+/* subtle building windows */
+
+.windows{
+    position:absolute;
+    inset:10px;
+
+    opacity:.32;
+
+    background-image:
+        linear-gradient(
+            90deg,
+            transparent 40%,
+            rgba(255,180,80,.6) 41%,
+            rgba(255,180,80,.6) 48%,
+            transparent 49%
+        );
+
+    background-size:15px 23px;
+}
+
+
+/* ============================================================
+   APP
+============================================================ */
+
+.app{
+    position:relative;
+    z-index:5;
+
+    width:100%;
+    height:100dvh;
+
+    max-width:440px;
+
+    display:flex;
+    flex-direction:column;
+
+    padding:
+        max(env(safe-area-inset-top),24px)
+        32px
+        max(env(safe-area-inset-bottom),24px);
+}
+
+
+/* ============================================================
+   MAIN STACK
+============================================================ */
+
+.stack{
+    flex:1;
+
+    display:flex;
+    flex-direction:column;
+
+    justify-content:space-between;
+
+    gap:24px;
+
+    padding:24px 0;
+}
+
+
+/* ============================================================
+   GTA VI HEADER
+============================================================ */
+
+.header{
+    text-align:center;
+
+    animation:
+        rise 1s
+        cubic-bezier(.16,1,.3,1)
+        both;
+}
+
+
+/* small GTA label */
+
+.brand{
+    font-size:10px;
+
+    font-weight:600;
+
+    letter-spacing:5px;
+
+    text-transform:uppercase;
+
+    color:rgba(255,255,255,.32);
+
+    margin-bottom:8px;
+}
+
+
+/* GTA VI main title */
+
+.title{
+    font-size:52px;
+
+    font-weight:700;
+
+    letter-spacing:-2.5px;
+
+    line-height:.95;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #ffd0e0 55%,
+            #ff3d8f 100%
+        );
+
+    -webkit-background-clip:text;
+    background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+    color:transparent;
+
+    filter:
+        drop-shadow(
+            0 4px 28px
+            rgba(255,61,143,.35)
+        );
+}
+
+
+/* Vice City */
+
+.subtitle{
+    margin-top:10px;
+
+    font-size:10px;
+
+    font-weight:600;
+
+    letter-spacing:5px;
+
+    text-transform:uppercase;
+
+    color:rgba(34,211,238,.85);
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.subtitle::before,
+.subtitle::after{
+    content:"";
+
+    width:20px;
+    height:1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(34,211,238,.5),
+            transparent
+        );
+}
+
+
+/* ============================================================
+   MIDDLE
+============================================================ */
+
+.middle{
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    flex:1;
+
+    gap:28px;
+}
+
+
+/* ============================================================
+   DAYS
+============================================================ */
+
+.days{
+    text-align:center;
+
+    animation:
+        rise 1s
+        cubic-bezier(.16,1,.3,1)
+        .1s
+        both;
+}
+
+.days-value{
+    font-size:
+        clamp(
+            88px,
+            26vw,
+            128px
+        );
+
+    font-weight:700;
+
+    letter-spacing:-6px;
+
+    line-height:.85;
+
+    font-variant-numeric:tabular-nums;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #ffd0e0 45%,
+            #ff3d8f 100%
+        );
+
+    -webkit-background-clip:text;
+    background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+    color:transparent;
+
+    filter:
+        drop-shadow(
+            0 8px 36px
+            rgba(255,61,143,.4)
+        );
+}
+
+.days-label{
+    margin-top:12px;
+
+    font-size:10px;
+
+    font-weight:600;
+
+    letter-spacing:6px;
+
+    text-transform:uppercase;
+
+    color:rgba(255,255,255,.42);
+}
+
+
+/* ============================================================
+   TIME UNITS
+============================================================ */
+
+.units{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:8px;
+
+    text-align:center;
+
+    animation:
+        rise 1s
+        cubic-bezier(.16,1,.3,1)
+        .2s
+        both;
+}
+
+.unit-value{
+    font-size:22px;
+
+    font-weight:600;
+
+    letter-spacing:-.5px;
+
+    line-height:1;
+
+    font-variant-numeric:tabular-nums;
+}
+
+.unit-label{
+    margin-top:8px;
+
+    font-size:9px;
+
+    font-weight:600;
+
+    letter-spacing:2.5px;
+
+    text-transform:uppercase;
+
+    color:rgba(255,255,255,.35);
+}
+
+
+/* colors */
+
+.unit:nth-child(1) .unit-value{
+    color:#ff3d8f;
+
+    text-shadow:
+        0 0 20px
+        rgba(255,61,143,.45);
+}
+
+.unit:nth-child(2) .unit-value{
+    color:#ff9d5c;
+
+    text-shadow:
+        0 0 20px
+        rgba(255,157,92,.45);
+}
+
+.unit:nth-child(3) .unit-value{
+    color:#22d3ee;
+
+    text-shadow:
+        0 0 20px
+        rgba(34,211,238,.45);
+}
+
+
+/* separators */
+
+.unit + .unit{
+    border-left:
+        1px solid
+        rgba(255,255,255,.06);
+}
+
+
+/* ============================================================
+   PROGRESS
+============================================================ */
+
+.progress{
+    animation:
+        rise 1s
+        cubic-bezier(.16,1,.3,1)
+        .3s
+        both;
+}
+
+.progress-header{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:baseline;
+
+    margin-bottom:10px;
+
+    padding:0 2px;
+}
+
+.progress-label{
+    font-size:10px;
+
+    font-weight:600;
+
+    letter-spacing:2.5px;
+
+    text-transform:uppercase;
+
+    color:rgba(255,255,255,.35);
+}
+
+.progress-value{
+    font-size:12px;
+
+    font-weight:600;
+
+    font-variant-numeric:tabular-nums;
+
+    color:#22d3ee;
+
+    text-shadow:
+        0 0 14px
+        rgba(34,211,238,.5);
+}
+
+.progress-track{
+    height:3px;
+
+    border-radius:100px;
+
+    background:
+        rgba(255,255,255,.06);
+
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+
+    width:0%;
+
+    border-radius:100px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ff3d8f 0%,
+            #a855f7 50%,
+            #22d3ee 100%
+        );
+
+    transition:
+        width
+        .9s
+        cubic-bezier(.16,1,.3,1);
+}
+
+
+/* ============================================================
+   FOOTER — ONLY DATES
+============================================================ */
+
+.footer{
+    text-align:center;
+
+    font-size:10px;
+
+    font-weight:500;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+    color:rgba(255,255,255,.28);
+
+    animation:
+        rise 1s
+        cubic-bezier(.16,1,.3,1)
+        .4s
+        both;
+}
+
+.footer .from{
+    color:rgba(255,61,143,.7);
+}
+
+.footer .to{
+    color:rgba(34,211,238,.7);
+}
+
+.footer .arrow{
+    display:inline-block;
+
+    margin:0 10px;
+
+    color:rgba(255,255,255,.15);
+}
+
+
+/* ============================================================
+   ZERO STATE
+============================================================ */
+
+.zero{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:8px;
+
+    text-align:center;
+
+    animation:
+        rise .9s
+        cubic-bezier(.16,1,.3,1)
+        both;
+}
+
+.zero-value{
+    font-size:42px;
+
+    font-weight:700;
+
+    letter-spacing:-2px;
+
+    line-height:1;
+
+    font-variant-numeric:tabular-nums;
+}
+
+.zero-label{
+    margin-top:10px;
+
+    font-size:9px;
+
+    font-weight:600;
+
+    letter-spacing:3px;
+
+    text-transform:uppercase;
+
+    color:rgba(255,255,255,.35);
+}
+
+.zero-cell:nth-child(1) .zero-value{
+    color:#ff3d8f;
+
+    text-shadow:
+        0 0 28px
+        rgba(255,61,143,.55);
+}
+
+.zero-cell:nth-child(2) .zero-value{
+    color:#ff9d5c;
+
+    text-shadow:
+        0 0 28px
+        rgba(255,157,92,.55);
+}
+
+.zero-cell:nth-child(3) .zero-value{
+    color:#22d3ee;
+
+    text-shadow:
+        0 0 28px
+        rgba(34,211,238,.55);
+}
+
+.zero-cell + .zero-cell{
+    border-left:
+        1px solid
+        rgba(255,255,255,.06);
+}
+
+
+/* ============================================================
+   END SCREEN
+============================================================ */
+
+.end{
+    position:fixed;
+
+    inset:0;
+
+    z-index:999;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    padding:40px;
+
+    background:
+        rgba(6,3,13,.78);
+
+    backdrop-filter:
+        blur(50px)
+        saturate(180%);
+
+    -webkit-backdrop-filter:
+        blur(50px)
+        saturate(180%);
+
+    animation:
+        fadeIn .9s ease both;
+}
+
+.end-title{
+    font-size:52px;
+
+    font-weight:700;
+
+    letter-spacing:-2.5px;
+
+    line-height:1;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #ffd0e0 55%,
+            #ff3d8f 100%
+        );
+
+    -webkit-background-clip:text;
+    background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+    color:transparent;
+
+    filter:
+        drop-shadow(
+            0 8px 40px
+            rgba(255,61,143,.55)
+        );
+
+    margin-bottom:14px;
+}
+
+.end-sub{
+    font-size:11px;
+
+    font-weight:600;
+
+    letter-spacing:5px;
+
+    text-transform:uppercase;
+
+    color:#22d3ee;
+
+    text-shadow:
+        0 0 20px
+        rgba(34,211,238,.6);
+
+    margin-bottom:44px;
+}
+
+.reload{
+    background:
+        rgba(255,255,255,.07);
+
+    border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    color:#fff;
+
+    font-family:inherit;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    padding:12px 36px;
+
+    border-radius:100px;
+
+    cursor:pointer;
+
+    backdrop-filter:blur(20px);
+}
+
+
+/* ============================================================
+   ANIMATIONS
+============================================================ */
+
+@keyframes rise{
+    from{
+        opacity:0;
+        transform:translateY(24px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+    }
+
+    to{
+        opacity:1;
+    }
+}
+
+.hidden{
+    display:none!important;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media(max-height:700px){
+
+    .stack{
+        gap:18px;
+        padding:14px 0;
+    }
+
+    .middle{
+        gap:22px;
+    }
+
+    .days-value{
+        font-size:
+            clamp(
+                76px,
+                22vw,
+                108px
+            );
+    }
+
+    .title{
+        font-size:46px;
+    }
+
+    .zero-value{
+        font-size:36px;
+    }
+}
+
+@media(max-width:360px){
+
+    .app{
+        padding-left:24px;
+        padding-right:24px;
+    }
+
+    .title{
+        font-size:46px;
+    }
+
+    .days-value{
+        font-size:
+            clamp(
+                80px,
+                24vw,
+                116px
+            );
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+
+    *,
+    *::before,
+    *::after{
+        animation-duration:.01ms!important;
+        animation-iteration-count:1!important;
+        transition-duration:.01ms!important;
+    }
+}
+</style>
 </head>
+
+
 <body>
 
-<div class="timer-app" id="timerApp">
-    <div class="content-wrapper">
-        <div id="titleSection">
-            <div class="font-medium text-accent" style="text-align: center;
-            letter-spacing: 3px;"> GTA VI COUNTDOWN</div>
-            <div class="font-tiny text-secondary-accent" style="text-align:
-            center; margin-top: 8px;"></div>
+<!-- ============================================================
+     STATIC VICE CITY BACKGROUND
+============================================================ -->
+
+<div class="sky">
+
+    <div class="sky-glow"></div>
+
+    <div class="city">
+
+        <div class="building">
+            <div class="windows"></div>
         </div>
 
-        <div id="daysPositiveView">
-            <div class="day-card-big">
-                <div class="font-huge text-white" id="daysValue">0</div>
-                <div class="font-small text-accent" style="margin-top: 6px;">DAYS LEFT</div>
-            </div>
-
-            <div class="cards-row">
-                <div class="mini-card" style="border-color: #ff6464;">
-                    <div class="font-medium" style="color: #ff6464;" id="hoursTotalValue">0</div>
-                    <div class="font-tiny text-white" style="margin-top: 8px;">HOURS</div>
-                </div>
-                <div class="mini-card" style="border-color: #64ff96;">
-                    <div class="font-medium" style="color: #64ff96;" id="minutesValue">00</div>
-                    <div class="font-tiny text-white" style="margin-top: 8px;">MINUTES</div>
-                </div>
-                <div class="mini-card" style="border-color: #6496ff;">
-                    <div class="font-medium" style="color: #6496ff;" id="secondsValue">00</div>
-                    <div class="font-tiny text-white" style="margin-top: 8px;">SECONDS</div>
-                </div>
-            </div>
+        <div class="building">
+            <div class="windows"></div>
         </div>
 
-        <div id="daysZeroView" class="hidden">
-            <div class="cards-row" style="margin-top: 2vh;">
-                <div class="large-card" style="border-color: #ff6464;">
-                    <div class="font-large" style="color: #ff6464;" id="hoursTotalZero">0</div>
-                    <div class="font-small text-white" style="margin-top: 10px;">HOURS</div>
-                </div>
-                <div class="large-card" style="border-color: #64ff96;">
-                    <div class="font-large" style="color: #64ff96;" id="minutesZero">00</div>
-                    <div class="font-small text-white" style="margin-top: 10px;">MINUTES</div>
-                </div>
-                <div class="large-card" style="border-color: #6496ff;">
-                    <div class="font-large" style="color: #6496ff;" id="secondsZero">00</div>
-                    <div class="font-small text-white" style="margin-top: 10px;">SECONDS</div>
-                </div>
-            </div>
+        <div class="building">
+            <div class="windows"></div>
         </div>
 
-        <div class="progress-wrapper">
-            <div class="progress-bg pulse-border" id="progressBg">
-                <div class="progress-fill" id="progressFill" style="width: 0%; height: 100%;"></div>
-            </div>
-            <div class="percent-label font-small text-white" id="percentText">0.00%</div>
+        <div class="building">
+            <div class="windows"></div>
         </div>
 
-        <div id="datesFooter" class="font-tiny text-gray" style="text-align: center;">
-            <span>🕒 DEC 4, 2023 → NOV 19, 2026</span>
+        <div class="building">
+            <div class="windows"></div>
         </div>
+
+        <div class="building">
+            <div class="windows"></div>
+        </div>
+
+        <div class="building">
+            <div class="windows"></div>
+        </div>
+
+        <div class="building">
+            <div class="windows"></div>
+        </div>
+
     </div>
+
+    <div class="vignette"></div>
+
 </div>
 
-<div id="endScreen" class="end-overlay" style="display: none;">
-    <div class="font-huge text-white" style="margin-bottom: 8px; text-align: center;">🎮 GTA VI</div>
-    <div class="end-message-main pulse-text" style="color: #ff2d55; font-weight: 800;">released countdown is done...</div>
-    <div class="end-credit">
-        this countdown created by <a href="https://instagram.com/whatsmusic.page" target="_blank" rel="noopener noreferrer">@whatsmusic.page</a>
+
+<!-- ============================================================
+     APP
+============================================================ -->
+
+<div class="app" id="app">
+
+    <div class="stack">
+
+
+        <!-- HEADER -->
+
+        <div class="header" id="header">
+
+            <div class="brand">
+                Grand Theft Auto
+            </div>
+
+            <div class="title">
+                VI
+            </div>
+
+            <div class="subtitle">
+                Countdown
+            </div>
+
+        </div>
+
+
+        <!-- MIDDLE -->
+
+        <div class="middle">
+
+
+            <!-- DAYS -->
+
+            <div class="days" id="daysBlock">
+
+                <div
+                    class="days-value"
+                    id="daysValue"
+                >
+                    0
+                </div>
+
+                <div class="days-label">
+                    Days Remaining
+                </div>
+
+            </div>
+
+
+            <!-- ZERO -->
+
+            <div
+                class="zero hidden"
+                id="zeroBlock"
+            >
+
+                <div class="zero-cell">
+
+                    <div
+                        class="zero-value"
+                        id="hoursZero"
+                    >
+                        0
+                    </div>
+
+                    <div class="zero-label">
+                        Hours
+                    </div>
+
+                </div>
+
+
+                <div class="zero-cell">
+
+                    <div
+                        class="zero-value"
+                        id="minutesZero"
+                    >
+                        00
+                    </div>
+
+                    <div class="zero-label">
+                        Minutes
+                    </div>
+
+                </div>
+
+
+                <div class="zero-cell">
+
+                    <div
+                        class="zero-value"
+                        id="secondsZero"
+                    >
+                        00
+                    </div>
+
+                    <div class="zero-label">
+                        Seconds
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- HOURS / MINUTES / SECONDS -->
+
+            <div
+                class="units"
+                id="unitsRow"
+            >
+
+                <div class="unit">
+
+                    <div
+                        class="unit-value"
+                        id="hoursValue"
+                    >
+                        0
+                    </div>
+
+                    <div class="unit-label">
+                        Hours
+                    </div>
+
+                </div>
+
+
+                <div class="unit">
+
+                    <div
+                        class="unit-value"
+                        id="minutesValue"
+                    >
+                        00
+                    </div>
+
+                    <div class="unit-label">
+                        Minutes
+                    </div>
+
+                </div>
+
+
+                <div class="unit">
+
+                    <div
+                        class="unit-value"
+                        id="secondsValue"
+                    >
+                        00
+                    </div>
+
+                    <div class="unit-label">
+                        Seconds
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PROGRESS -->
+
+            <div
+                class="progress"
+                id="progressBlock"
+            >
+
+                <div class="progress-header">
+
+                    <div class="progress-label">
+                        Progress
+                    </div>
+
+                    <div
+                        class="progress-value"
+                        id="percentText"
+                    >
+                        0.00%
+                    </div>
+
+                </div>
+
+                <div class="progress-track">
+
+                    <div
+                        class="progress-fill"
+                        id="progressFill"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ONLY DATES -->
+
+        <div
+            class="footer"
+            id="footer"
+        >
+
+            <span class="from">
+                Dec 4, 2023
+            </span>
+
+            <span class="arrow">
+                —
+            </span>
+
+            <span class="to">
+                Nov 19, 2026
+            </span>
+
+        </div>
+
     </div>
-    <button id="refreshBtn">⟳ Refresh Timer</button>
-    <p style="color:#6a6a7c; margin-top: 36px; font-size: 0.7rem;">countdown finished — page will refresh after click</p>
+
 </div>
+
+
+<!-- ============================================================
+     END SCREEN
+============================================================ -->
+
+<div
+    class="end hidden"
+    id="endScreen"
+>
+
+    <div class="end-title">
+        Welcome
+    </div>
+
+    <div class="end-sub">
+        to Vice City
+    </div>
+
+    <button
+        class="reload"
+        id="reloadBtn"
+    >
+        Reload
+    </button>
+
+</div>
+
 
 <script>
-    (function() {
-        // =====================================================
-        // راه‌حل قطعی مشکل تایم‌زون (Timezone)
-        // ساخت تاریخ به صورت UTC و تبدیل به محلی
-        // =====================================================
-        
-        function createLocalDate(year, month, day) {
-            // ماه از 0 شروع می‌شود: 11 = December, 10 = November
-            return new Date(year, month, day, 0, 0, 0);
+
+(function(){
+
+    "use strict";
+
+
+    /* ========================================================
+       DATES
+    ======================================================== */
+
+    const START =
+        new Date(
+            2023,
+            11,
+            4,
+            0,
+            0,
+            0
+        );
+
+    const END =
+        new Date(
+            2026,
+            10,
+            19,
+            0,
+            0,
+            0
+        );
+
+    const TOTAL =
+        END - START;
+
+
+    /* ========================================================
+       ELEMENTS
+    ======================================================== */
+
+    const $ =
+        id => document.getElementById(id);
+
+    const app =
+        $("app");
+
+    const header =
+        $("header");
+
+    const daysBlock =
+        $("daysBlock");
+
+    const zeroBlock =
+        $("zeroBlock");
+
+    const unitsRow =
+        $("unitsRow");
+
+    const progressBlock =
+        $("progressBlock");
+
+    const footer =
+        $("footer");
+
+    const daysValue =
+        $("daysValue");
+
+    const hoursValue =
+        $("hoursValue");
+
+    const minutesValue =
+        $("minutesValue");
+
+    const secondsValue =
+        $("secondsValue");
+
+    const hoursZero =
+        $("hoursZero");
+
+    const minutesZero =
+        $("minutesZero");
+
+    const secondsZero =
+        $("secondsZero");
+
+    const progressFill =
+        $("progressFill");
+
+    const percentText =
+        $("percentText");
+
+    const endScreen =
+        $("endScreen");
+
+
+    let timer = null;
+
+    let finished = false;
+
+
+    /* ========================================================
+       HELPERS
+    ======================================================== */
+
+    const pad =
+        number =>
+            String(number).padStart(2,"0");
+
+
+    function breakdown(seconds){
+
+        seconds =
+            Math.max(
+                0,
+                Math.floor(seconds)
+            );
+
+        return {
+
+            days:
+                Math.floor(
+                    seconds / 86400
+                ),
+
+            hours:
+                Math.floor(
+                    seconds / 3600
+                ),
+
+            minutes:
+                Math.floor(
+                    (seconds % 3600) / 60
+                ),
+
+            seconds:
+                seconds % 60
+        };
+    }
+
+
+    function progress(now){
+
+        if(now <= START)
+            return 0;
+
+        if(now >= END)
+            return 100;
+
+        return (
+            (now - START) /
+            TOTAL
+        ) * 100;
+    }
+
+
+    /* ========================================================
+       UPDATE
+    ======================================================== */
+
+    function update(){
+
+        if(finished)
+            return;
+
+
+        const now =
+            new Date();
+
+
+        /* Finished */
+
+        if(now >= END){
+
+            finished = true;
+
+            if(timer)
+                clearInterval(timer);
+
+            app.style.display =
+                "none";
+
+            endScreen
+                .classList
+                .remove("hidden");
+
+            return;
         }
-        
-        //شروع
-        const START_DATE = createLocalDate(2023, 11, 4);
-        // پایان
-        const END_DATE = createLocalDate(2026, 10, 19);
-        
-        const TOTAL_DURATION_MS = END_DATE - START_DATE;
-        
-        // DOM elements
-        const daysPositiveView = document.getElementById('daysPositiveView');
-        const daysZeroView = document.getElementById('daysZeroView');
-        const titleSection = document.getElementById('titleSection');
-        const datesFooter = document.getElementById('datesFooter');
-        const progressFill = document.getElementById('progressFill');
-        const percentSpan = document.getElementById('percentText');
-        const progressBgDiv = document.getElementById('progressBg');
-        
-        const daysValueSpan = document.getElementById('daysValue');
-        const hoursTotalSpan = document.getElementById('hoursTotalValue');
-        const minutesSpan = document.getElementById('minutesValue');
-        const secondsSpan = document.getElementById('secondsValue');
-        
-        const hoursTotalZeroSpan = document.getElementById('hoursTotalZero');
-        const minutesZeroSpan = document.getElementById('minutesZero');
-        const secondsZeroSpan = document.getElementById('secondsZero');
-        
-        const endScreenDiv = document.getElementById('endScreen');
-        const timerAppDiv = document.getElementById('timerApp');
-        
-        let intervalId = null;
-        let isFinished = false;
-        
-        function formatRemaining(remainingSeconds) {
-            if (remainingSeconds < 0) remainingSeconds = 0;
-            const days = Math.floor(remainingSeconds / 86400);
-            const totalHours = Math.floor(remainingSeconds / 3600);
-            const minutes = Math.floor((remainingSeconds % 3600) / 60);
-            const seconds = Math.floor(remainingSeconds % 60);
-            return { days, totalHours, minutes, seconds };
+
+
+        const remaining =
+            (END - now) / 1000;
+
+
+        const {
+            days,
+            hours,
+            minutes,
+            seconds
+        } =
+            breakdown(
+                remaining
+            );
+
+
+        const pct =
+            progress(now);
+
+
+        /* Progress */
+
+        progressFill.style.width =
+            pct + "%";
+
+        percentText.textContent =
+            pct.toFixed(2) + "%";
+
+
+        /* ====================================================
+           NORMAL
+        ==================================================== */
+
+        if(days > 0){
+
+            daysBlock
+                .classList
+                .remove("hidden");
+
+            zeroBlock
+                .classList
+                .add("hidden");
+
+            unitsRow
+                .classList
+                .remove("hidden");
+
+            progressBlock
+                .classList
+                .remove("hidden");
+
+            header
+                .classList
+                .remove("hidden");
+
+            footer
+                .classList
+                .remove("hidden");
+
+
+            daysValue.textContent =
+                days.toLocaleString(
+                    "en-US"
+                );
+
+            hoursValue.textContent =
+                hours.toLocaleString(
+                    "en-US"
+                );
+
+            minutesValue.textContent =
+                pad(minutes);
+
+            secondsValue.textContent =
+                pad(seconds);
+
         }
-        
-        function calcProgress(now) {
-            if (now <= START_DATE) return 0.0;
-            if (now >= END_DATE) return 1.0;
-            const elapsed = now - START_DATE;
-            let progress = elapsed / TOTAL_DURATION_MS;
-            return Math.min(1.0, Math.max(0.0, progress));
+
+
+        /* ====================================================
+           LAST DAY
+        ==================================================== */
+
+        else{
+
+            daysBlock
+                .classList
+                .add("hidden");
+
+            zeroBlock
+                .classList
+                .remove("hidden");
+
+            unitsRow
+                .classList
+                .add("hidden");
+
+            progressBlock
+                .classList
+                .add("hidden");
+
+            header
+                .classList
+                .add("hidden");
+
+            footer
+                .classList
+                .add("hidden");
+
+
+            hoursZero.textContent =
+                hours.toLocaleString(
+                    "en-US"
+                );
+
+            minutesZero.textContent =
+                pad(minutes);
+
+            secondsZero.textContent =
+                pad(seconds);
         }
-        
-        function updateTimer() {
-            if (isFinished) return;
-            
-            const now = new Date(); // زمان فعلی محلی
-            
-            // بررسی پایان کانت‌داون
-            if (now >= END_DATE) {
-                isFinished = true;
-                if (intervalId) {
-                    clearInterval(intervalId);
-                    intervalId = null;
-                }
-                timerAppDiv.style.display = 'none';
-                endScreenDiv.style.display = 'flex';
-                return;
-            }
-            
-            // محاسبه زمان باقی‌مانده
-            let remainingMs = END_DATE - now;
-            if (remainingMs < 0) remainingMs = 0;
-            const remainingSec = remainingMs / 1000;
-            const { days, totalHours, minutes, seconds } = formatRemaining(remainingSec);
-            
-            // محاسبه درصد پیشرفت
-            const progressRaw = calcProgress(now);
-            const percentValue = (progressRaw * 100).toFixed(2);
-            progressFill.style.width = `${progressRaw * 100}%`;
-            percentSpan.innerText = `${percentValue}%`;
-            
-            // نمایش یا عدم نمایش ویو مخصوص روز صفر
-            const isDaysZero = (days === 0);
-            
-            if (!isDaysZero) {
-                // حالت عادی: روزها بیشتر از صفر
-                daysPositiveView.classList.remove('hidden');
-                daysZeroView.classList.add('hidden');
-                titleSection.classList.remove('hidden');
-                datesFooter.classList.remove('hidden');
-                
-                daysValueSpan.innerText = days.toLocaleString();
-                hoursTotalSpan.innerText = totalHours.toLocaleString();
-                minutesSpan.innerText = minutes.toString().padStart(2, '0');
-                secondsSpan.innerText = seconds.toString().padStart(2, '0');
-            } 
-            else {
-                // حالت ویژه: روز صفر (کمتر از 24 ساعت مونده)
-                daysPositiveView.classList.add('hidden');
-                daysZeroView.classList.remove('hidden');
-                titleSection.classList.add('hidden');
-                datesFooter.classList.add('hidden');
-                
-                hoursTotalZeroSpan.innerText = totalHours.toLocaleString();
-                minutesZeroSpan.innerText = minutes.toString().padStart(2, '0');
-                secondsZeroSpan.innerText = seconds.toString().padStart(2, '0');
-            }
+    }
+
+
+    /* ========================================================
+       START
+    ======================================================== */
+
+    function start(){
+
+        update();
+
+        timer =
+            setInterval(
+                update,
+                1000
+            );
+    }
+
+
+    $("reloadBtn")
+        .addEventListener(
+            "click",
+            () => location.reload()
+        );
+
+
+    document.addEventListener(
+        "dblclick",
+        event =>
+            event.preventDefault(),
+        {
+            passive:false
         }
-        
-        // دکمه Refresh در صفحه پایان
-        function initButtons() {
-            const refreshBtn = document.getElementById('refreshBtn');
-            if (refreshBtn) {
-                refreshBtn.addEventListener('click', function() {
-                    window.location.reload();
-                });
-            }
-        }
-        
-        function startTimer() {
-            updateTimer(); // اجرای سریع برای نمایش اولیه
-            intervalId = setInterval(updateTimer, 1000);
-        }
-        
-        // اضافه کردن کلاس انیمیشن به نوار پیشرفت
-        if (progressBgDiv) {
-            progressBgDiv.classList.add('pulse-border');
-        }
-        
-        // غیرفعال کردن کامل دکمه ESC
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' || e.key === 'Esc') {
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            }
-        });
-        
-        // شروع تایمر پس از لود کامل صفحه
-        window.addEventListener('load', function() {
-            initButtons();
-            startTimer();
-        });
-        
-        // نمایش خطا در کنسول برای دیباگ (اختیاری)
-        console.log('Countdown started:', {
-            start: START_DATE.toString(),
-            end: END_DATE.toString(),
-            totalDays: TOTAL_DURATION_MS / 86400000
-        });
-    })();
+    );
+
+
+    window.addEventListener(
+        "load",
+        start
+    );
+
+})();
+
 </script>
+
 </body>
 </html>
