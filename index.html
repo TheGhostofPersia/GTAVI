@@ -2,1654 +2,863 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#06030d">
+<meta name="theme-color" content="#0a0018">
+<title>GTA VI · Vice City Countdown</title>
 
-<title>GTA VI · Countdown</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-*,
-*::before,
-*::after{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-html,
-body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
-body{
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Display",
-        "SF Pro Text",
-        "Inter",
-        "Helvetica Neue",
-        Arial,
-        sans-serif;
-
-    background:#06030d;
-    color:#fff;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+  font-feature-settings: 'tnum' 1, 'ss01' 1, 'cv11' 1;
+  background: #0a0018;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  position: relative;
 }
-
 
 /* ============================================================
-   VICE CITY STATIC SKY
-============================================================ */
-
-.sky{
-    position:fixed;
-    inset:0;
-    z-index:0;
-    overflow:hidden;
-
-    background:
-        linear-gradient(
-            180deg,
-            #06030d 0%,
-            #0b0418 34%,
-            #26082d 62%,
-            #12051c 100%
-        );
+   BACKGROUND — Vice City deep atmosphere
+   ============================================================ */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #0a0018;
 }
 
-/* pink / purple atmosphere */
-
-.sky::before{
-    content:"";
-
-    position:absolute;
-
-    left:50%;
-    bottom:-35%;
-
-    width:160%;
-    height:95%;
-
-    transform:translateX(-50%);
-
-    background:
-        radial-gradient(
-            ellipse 45% 50% at 50% 45%,
-            rgba(255,45,120,.72) 0%,
-            transparent 60%
-        ),
-
-        radial-gradient(
-            ellipse 55% 60% at 50% 52%,
-            rgba(255,95,145,.42) 0%,
-            transparent 58%
-        ),
-
-        radial-gradient(
-            ellipse 70% 75% at 50% 60%,
-            rgba(168,85,247,.45) 0%,
-            transparent 60%
-        );
-
-    filter:blur(75px);
+/* Dark overlay */
+.bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      rgba(10, 0, 24, 0.75) 0%,
+      rgba(10, 0, 24, 0.35) 28%,
+      rgba(10, 0, 24, 0.30) 48%,
+      rgba(10, 0, 24, 0.60) 76%,
+      rgba(10, 0, 24, 0.95) 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* cyan atmosphere */
-
-.sky::after{
-    content:"";
-
-    position:absolute;
-
-    left:-25%;
-    top:-25%;
-
-    width:80%;
-    height:80%;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(8,145,178,.38) 0%,
-            transparent 60%
-        );
-
-    filter:blur(95px);
+/* Vice City color wash */
+.bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 8%, rgba(255, 45, 120, 0.25) 0%, transparent 55%),
+    radial-gradient(ellipse at 88% 92%, rgba(34, 211, 238, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(168, 85, 247, 0.20) 0%, transparent 60%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 2;
 }
-
-
-/* right cyan glow */
-
-.sky-glow{
-    position:absolute;
-
-    right:-30%;
-    top:-20%;
-
-    width:75%;
-    height:75%;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(34,211,238,.30) 0%,
-            transparent 60%
-        );
-
-    filter:blur(100px);
-}
-
-
-/* cinematic vignette */
-
-.vignette{
-    position:absolute;
-    inset:0;
-
-    background:
-        radial-gradient(
-            ellipse at 50% 45%,
-            transparent 25%,
-            rgba(6,3,13,.35) 65%,
-            rgba(6,3,13,.82) 100%
-        );
-
-    pointer-events:none;
-}
-
 
 /* ============================================================
-   SUBTLE CITY SILHOUETTE
-============================================================ */
-
-.city{
-    position:absolute;
-
-    left:0;
-    right:0;
-    bottom:0;
-
-    height:34%;
-
-    opacity:.42;
-
-    display:flex;
-    align-items:flex-end;
-    justify-content:space-around;
+   RETRO GRID FLOOR
+   ============================================================ */
+.grid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 24%;
+  overflow: hidden;
+  perspective: 220px;
+  perspective-origin: 50% 0%;
+  z-index: 3;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 30%, black 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, black 30%, black 100%);
 }
 
-.building{
-    position:relative;
-
-    background:
-        linear-gradient(
-            90deg,
-            #05030a,
-            #10091a,
-            #05030a
-        );
-
-    border-top:1px solid rgba(255,255,255,.05);
-
-    box-shadow:
-        0 -15px 50px rgba(255,0,120,.08);
+.grid::before {
+  content: '';
+  position: absolute;
+  inset: -100% -100% 0 -100%;
+  background-image:
+    linear-gradient(rgba(255, 45, 120, 0.55) 1.5px, transparent 1.5px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.55) 1.5px, transparent 1.5px);
+  background-size: 60px 60px;
+  transform: rotateX(72deg);
+  transform-origin: 50% 0;
+  animation: gridScroll 2.4s linear infinite;
+  opacity: 0.85;
 }
 
-.building:nth-child(1){
-    width:9%;
-    height:48%;
+@keyframes gridScroll {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 60px; }
 }
 
-.building:nth-child(2){
-    width:13%;
-    height:76%;
+/* ============================================================
+   SCANLINES
+   ============================================================ */
+.scanlines {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.10) 0px,
+    rgba(0, 0, 0, 0.10) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.35;
 }
 
-.building:nth-child(3){
-    width:10%;
-    height:58%;
+/* ============================================================
+   VIGNETTE
+   ============================================================ */
+.vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(10, 0, 24, 0.75) 95%);
 }
-
-.building:nth-child(4){
-    width:17%;
-    height:91%;
-}
-
-.building:nth-child(5){
-    width:9%;
-    height:67%;
-}
-
-.building:nth-child(6){
-    width:15%;
-    height:82%;
-}
-
-.building:nth-child(7){
-    width:11%;
-    height:53%;
-}
-
-.building:nth-child(8){
-    width:15%;
-    height:73%;
-}
-
-
-/* subtle building windows */
-
-.windows{
-    position:absolute;
-    inset:10px;
-
-    opacity:.32;
-
-    background-image:
-        linear-gradient(
-            90deg,
-            transparent 40%,
-            rgba(255,180,80,.6) 41%,
-            rgba(255,180,80,.6) 48%,
-            transparent 49%
-        );
-
-    background-size:15px 23px;
-}
-
 
 /* ============================================================
    APP
-============================================================ */
-
-.app{
-    position:relative;
-    z-index:5;
-
-    width:100%;
-    height:100dvh;
-
-    max-width:440px;
-
-    display:flex;
-    flex-direction:column;
-
-    padding:
-        max(env(safe-area-inset-top),24px)
-        32px
-        max(env(safe-area-inset-bottom),24px);
+   ============================================================ */
+.app {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100vh;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  padding:
+    max(env(safe-area-inset-top, 30px), 30px)
+    28px
+    max(env(safe-area-inset-bottom, 26px), 26px);
 }
 
+.stack {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 22px;
+  padding: 18px 0;
+}
 
 /* ============================================================
-   MAIN STACK
-============================================================ */
-
-.stack{
-    flex:1;
-
-    display:flex;
-    flex-direction:column;
-
-    justify-content:space-between;
-
-    gap:24px;
-
-    padding:24px 0;
+   HEADER
+   ============================================================ */
+.header {
+  text-align: center;
+  animation: rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-
-/* ============================================================
-   GTA VI HEADER
-============================================================ */
-
-.header{
-    text-align:center;
-
-    animation:
-        rise 1s
-        cubic-bezier(.16,1,.3,1)
-        both;
+.brand {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 10px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9), 0 0 12px rgba(255, 45, 120, 0.5);
 }
 
-
-/* small GTA label */
-
-.brand{
-    font-size:10px;
-
-    font-weight:600;
-
-    letter-spacing:5px;
-
-    text-transform:uppercase;
-
-    color:rgba(255,255,255,.32);
-
-    margin-bottom:8px;
+.title {
+  font-size: 62px;
+  font-weight: 900;
+  letter-spacing: -3px;
+  line-height: 0.9;
+  background: linear-gradient(180deg, #ffffff 0%, #ffd166 40%, #ff2d78 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter:
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.95))
+    drop-shadow(0 4px 30px rgba(255, 45, 120, 0.75))
+    drop-shadow(0 8px 60px rgba(255, 140, 66, 0.45));
 }
 
-
-/* GTA VI main title */
-
-.title{
-    font-size:52px;
-
-    font-weight:700;
-
-    letter-spacing:-2.5px;
-
-    line-height:.95;
-
-    background:
-        linear-gradient(
-            180deg,
-            #ffffff 0%,
-            #ffd0e0 55%,
-            #ff3d8f 100%
-        );
-
-    -webkit-background-clip:text;
-    background-clip:text;
-
-    -webkit-text-fill-color:transparent;
-    color:transparent;
-
-    filter:
-        drop-shadow(
-            0 4px 28px
-            rgba(255,61,143,.35)
-        );
-}
-
-
-/* Vice City */
-
-.subtitle{
-    margin-top:10px;
-
-    font-size:10px;
-
-    font-weight:600;
-
-    letter-spacing:5px;
-
-    text-transform:uppercase;
-
-    color:rgba(34,211,238,.85);
-
-    display:inline-flex;
-
-    align-items:center;
-
-    gap:10px;
+.subtitle {
+  margin-top: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #22d3ee;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.95),
+    0 0 14px rgba(34, 211, 238, 0.85),
+    0 0 28px rgba(34, 211, 238, 0.5);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .subtitle::before,
-.subtitle::after{
-    content:"";
-
-    width:20px;
-    height:1px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(34,211,238,.5),
-            transparent
-        );
+.subtitle::after {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.8), transparent);
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.6);
 }
-
 
 /* ============================================================
    MIDDLE
-============================================================ */
-
-.middle{
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
-
-    flex:1;
-
-    gap:28px;
+   ============================================================ */
+.middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  gap: 26px;
 }
-
 
 /* ============================================================
-   DAYS
-============================================================ */
-
-.days{
-    text-align:center;
-
-    animation:
-        rise 1s
-        cubic-bezier(.16,1,.3,1)
-        .1s
-        both;
+   DAYS HERO
+   ============================================================ */
+.days {
+  text-align: center;
+  animation: rise 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+  position: relative;
 }
 
-.days-value{
-    font-size:
-        clamp(
-            88px,
-            26vw,
-            128px
-        );
-
-    font-weight:700;
-
-    letter-spacing:-6px;
-
-    line-height:.85;
-
-    font-variant-numeric:tabular-nums;
-
-    background:
-        linear-gradient(
-            180deg,
-            #ffffff 0%,
-            #ffd0e0 45%,
-            #ff3d8f 100%
-        );
-
-    -webkit-background-clip:text;
-    background-clip:text;
-
-    -webkit-text-fill-color:transparent;
-    color:transparent;
-
-    filter:
-        drop-shadow(
-            0 8px 36px
-            rgba(255,61,143,.4)
-        );
+.days::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(10, 0, 24, 0.60) 0%, transparent 65%);
+  filter: blur(30px);
+  z-index: -1;
+  pointer-events: none;
 }
 
-.days-label{
-    margin-top:12px;
-
-    font-size:10px;
-
-    font-weight:600;
-
-    letter-spacing:6px;
-
-    text-transform:uppercase;
-
-    color:rgba(255,255,255,.42);
+.days-value {
+  font-size: clamp(96px, 28vw, 140px);
+  font-weight: 900;
+  letter-spacing: -7px;
+  line-height: 0.85;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(180deg, #ffffff 0%, #ffd166 45%, #ff2d78 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter:
+    drop-shadow(0 3px 6px rgba(0, 0, 0, 0.98))
+    drop-shadow(0 0 25px rgba(255, 45, 120, 0.85))
+    drop-shadow(0 0 50px rgba(255, 140, 66, 0.55));
 }
 
+.days-label {
+  margin-top: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.95),
+    0 0 12px rgba(34, 211, 238, 0.65);
+}
 
 /* ============================================================
-   TIME UNITS
-============================================================ */
-
-.units{
-    display:grid;
-
-    grid-template-columns:
-        repeat(3,1fr);
-
-    gap:8px;
-
-    text-align:center;
-
-    animation:
-        rise 1s
-        cubic-bezier(.16,1,.3,1)
-        .2s
-        both;
+   UNITS
+   ============================================================ */
+.units {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  text-align: center;
+  animation: rise 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
 }
 
-.unit-value{
-    font-size:22px;
-
-    font-weight:600;
-
-    letter-spacing:-.5px;
-
-    line-height:1;
-
-    font-variant-numeric:tabular-nums;
+.unit {
+  padding: 12px 4px;
+  position: relative;
 }
 
-.unit-label{
-    margin-top:8px;
-
-    font-size:9px;
-
-    font-weight:600;
-
-    letter-spacing:2.5px;
-
-    text-transform:uppercase;
-
-    color:rgba(255,255,255,.35);
+.unit + .unit::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 18%;
+  bottom: 18%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(255, 45, 120, 0.6), rgba(34, 211, 238, 0.6), transparent);
+  box-shadow: 0 0 6px rgba(255, 45, 120, 0.4);
 }
 
-
-/* colors */
-
-.unit:nth-child(1) .unit-value{
-    color:#ff3d8f;
-
-    text-shadow:
-        0 0 20px
-        rgba(255,61,143,.45);
+.unit-value {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
-.unit:nth-child(2) .unit-value{
-    color:#ff9d5c;
-
-    text-shadow:
-        0 0 20px
-        rgba(255,157,92,.45);
+.unit-label {
+  margin-top: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
 }
 
-.unit:nth-child(3) .unit-value{
-    color:#22d3ee;
-
-    text-shadow:
-        0 0 20px
-        rgba(34,211,238,.45);
+.unit:nth-child(1) .unit-value {
+  color: #ff2d78;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.95),
+    0 0 20px rgba(255, 45, 120, 0.95),
+    0 0 40px rgba(255, 45, 120, 0.55);
 }
-
-
-/* separators */
-
-.unit + .unit{
-    border-left:
-        1px solid
-        rgba(255,255,255,.06);
+.unit:nth-child(2) .unit-value {
+  color: #ffd166;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.95),
+    0 0 20px rgba(255, 209, 102, 0.95),
+    0 0 40px rgba(255, 209, 102, 0.55);
 }
-
+.unit:nth-child(3) .unit-value {
+  color: #22d3ee;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.95),
+    0 0 20px rgba(34, 211, 238, 0.95),
+    0 0 40px rgba(34, 211, 238, 0.55);
+}
 
 /* ============================================================
    PROGRESS
-============================================================ */
-
-.progress{
-    animation:
-        rise 1s
-        cubic-bezier(.16,1,.3,1)
-        .3s
-        both;
+   ============================================================ */
+.progress {
+  animation: rise 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
 }
 
-.progress-header{
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:baseline;
-
-    margin-bottom:10px;
-
-    padding:0 2px;
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+  padding: 0 2px;
 }
 
-.progress-label{
-    font-size:10px;
-
-    font-weight:600;
-
-    letter-spacing:2.5px;
-
-    text-transform:uppercase;
-
-    color:rgba(255,255,255,.35);
+.progress-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
 }
 
-.progress-value{
-    font-size:12px;
-
-    font-weight:600;
-
-    font-variant-numeric:tabular-nums;
-
-    color:#22d3ee;
-
-    text-shadow:
-        0 0 14px
-        rgba(34,211,238,.5);
+.progress-value {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  font-variant-numeric: tabular-nums;
+  color: #22d3ee;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.95),
+    0 0 16px rgba(34, 211, 238, 0.95);
 }
 
-.progress-track{
-    height:3px;
-
-    border-radius:100px;
-
-    background:
-        rgba(255,255,255,.06);
-
-    overflow:hidden;
+.progress-track {
+  height: 4px;
+  border-radius: 100px;
+  background: rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.65) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
-.progress-fill{
-    height:100%;
-
-    width:0%;
-
-    border-radius:100px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #ff3d8f 0%,
-            #a855f7 50%,
-            #22d3ee 100%
-        );
-
-    transition:
-        width
-        .9s
-        cubic-bezier(.16,1,.3,1);
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, #ff2d78 0%, #ffd166 50%, #22d3ee 100%);
+  box-shadow:
+    0 0 12px rgba(255, 45, 120, 0.95),
+    0 0 20px rgba(34, 211, 238, 0.75);
+  transition: width 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 
 /* ============================================================
-   FOOTER — ONLY DATES
-============================================================ */
-
-.footer{
-    text-align:center;
-
-    font-size:10px;
-
-    font-weight:500;
-
-    letter-spacing:2px;
-
-    text-transform:uppercase;
-
-    color:rgba(255,255,255,.28);
-
-    animation:
-        rise 1s
-        cubic-bezier(.16,1,.3,1)
-        .4s
-        both;
+   ZERO-DAY STATE
+   ============================================================ */
+.zero {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  text-align: center;
+  animation: rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.footer .from{
-    color:rgba(255,61,143,.7);
+.zero-cell {
+  padding: 12px 4px;
+  position: relative;
 }
 
-.footer .to{
-    color:rgba(34,211,238,.7);
+.zero-cell + .zero-cell::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 18%;
+  bottom: 18%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(255, 45, 120, 0.6), rgba(34, 211, 238, 0.6), transparent);
+  box-shadow: 0 0 6px rgba(255, 45, 120, 0.4);
 }
 
-.footer .arrow{
-    display:inline-block;
-
-    margin:0 10px;
-
-    color:rgba(255,255,255,.15);
+.zero-value {
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
+.zero-label {
+  margin-top: 10px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+}
+
+.zero-cell:nth-child(1) .zero-value {
+  color: #ff2d78;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.95),
+    0 0 28px rgba(255, 45, 120, 0.95),
+    0 0 50px rgba(255, 45, 120, 0.6);
+}
+.zero-cell:nth-child(2) .zero-value {
+  color: #ffd166;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.95),
+    0 0 28px rgba(255, 209, 102, 0.95),
+    0 0 50px rgba(255, 209, 102, 0.6);
+}
+.zero-cell:nth-child(3) .zero-value {
+  color: #22d3ee;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.95),
+    0 0 28px rgba(34, 211, 238, 0.95),
+    0 0 50px rgba(34, 211, 238, 0.6);
+}
 
 /* ============================================================
-   ZERO STATE
-============================================================ */
-
-.zero{
-    display:grid;
-
-    grid-template-columns:
-        repeat(3,1fr);
-
-    gap:8px;
-
-    text-align:center;
-
-    animation:
-        rise .9s
-        cubic-bezier(.16,1,.3,1)
-        both;
+   FOOTER
+   ============================================================ */
+.footer {
+  text-align: center;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  animation: rise 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95);
 }
 
-.zero-value{
-    font-size:42px;
-
-    font-weight:700;
-
-    letter-spacing:-2px;
-
-    line-height:1;
-
-    font-variant-numeric:tabular-nums;
+.footer .from {
+  color: rgba(255, 45, 120, 0.95);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95), 0 0 10px rgba(255, 45, 120, 0.65);
+}
+.footer .to {
+  color: rgba(34, 211, 238, 0.95);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95), 0 0 10px rgba(34, 211, 238, 0.65);
 }
 
-.zero-label{
-    margin-top:10px;
-
-    font-size:9px;
-
-    font-weight:600;
-
-    letter-spacing:3px;
-
-    text-transform:uppercase;
-
-    color:rgba(255,255,255,.35);
+.footer .arrow {
+  display: inline-block;
+  margin: 0 12px;
+  color: rgba(255, 209, 102, 0.85);
 }
-
-.zero-cell:nth-child(1) .zero-value{
-    color:#ff3d8f;
-
-    text-shadow:
-        0 0 28px
-        rgba(255,61,143,.55);
-}
-
-.zero-cell:nth-child(2) .zero-value{
-    color:#ff9d5c;
-
-    text-shadow:
-        0 0 28px
-        rgba(255,157,92,.55);
-}
-
-.zero-cell:nth-child(3) .zero-value{
-    color:#22d3ee;
-
-    text-shadow:
-        0 0 28px
-        rgba(34,211,238,.55);
-}
-
-.zero-cell + .zero-cell{
-    border-left:
-        1px solid
-        rgba(255,255,255,.06);
-}
-
 
 /* ============================================================
    END SCREEN
-============================================================ */
-
-.end{
-    position:fixed;
-
-    inset:0;
-
-    z-index:999;
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
-
-    align-items:center;
-
-    text-align:center;
-
-    padding:40px;
-
-    background:
-        rgba(6,3,13,.78);
-
-    backdrop-filter:
-        blur(50px)
-        saturate(180%);
-
-    -webkit-backdrop-filter:
-        blur(50px)
-        saturate(180%);
-
-    animation:
-        fadeIn .9s ease both;
+   ============================================================ */
+.end {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+  background: linear-gradient(180deg, rgba(10, 0, 24, 0.85) 0%, rgba(45, 10, 78, 0.92) 100%);
+  backdrop-filter: blur(50px) saturate(180%);
+  -webkit-backdrop-filter: blur(50px) saturate(180%);
+  animation: fadeIn 0.9s ease both;
 }
 
-.end-title{
-    font-size:52px;
-
-    font-weight:700;
-
-    letter-spacing:-2.5px;
-
-    line-height:1;
-
-    background:
-        linear-gradient(
-            180deg,
-            #ffffff 0%,
-            #ffd0e0 55%,
-            #ff3d8f 100%
-        );
-
-    -webkit-background-clip:text;
-    background-clip:text;
-
-    -webkit-text-fill-color:transparent;
-    color:transparent;
-
-    filter:
-        drop-shadow(
-            0 8px 40px
-            rgba(255,61,143,.55)
-        );
-
-    margin-bottom:14px;
+.end-title {
+  font-size: 62px;
+  font-weight: 900;
+  letter-spacing: -3px;
+  line-height: 0.9;
+  background: linear-gradient(180deg, #ffffff 0%, #ffd166 40%, #ff2d78 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter:
+    drop-shadow(0 8px 40px rgba(255, 45, 120, 0.85))
+    drop-shadow(0 0 80px rgba(255, 140, 66, 0.55));
+  margin-bottom: 16px;
 }
 
-.end-sub{
-    font-size:11px;
-
-    font-weight:600;
-
-    letter-spacing:5px;
-
-    text-transform:uppercase;
-
-    color:#22d3ee;
-
-    text-shadow:
-        0 0 20px
-        rgba(34,211,238,.6);
-
-    margin-bottom:44px;
+.end-sub {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #22d3ee;
+  text-shadow: 0 0 20px rgba(34, 211, 238, 0.9), 0 0 40px rgba(34, 211, 238, 0.5);
+  margin-bottom: 48px;
 }
 
-.reload{
-    background:
-        rgba(255,255,255,.07);
-
-    border:
-        1px solid
-        rgba(255,255,255,.12);
-
-    color:#fff;
-
-    font-family:inherit;
-
-    font-size:13px;
-
-    font-weight:600;
-
-    padding:12px 36px;
-
-    border-radius:100px;
-
-    cursor:pointer;
-
-    backdrop-filter:blur(20px);
+.end-credit {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 32px;
 }
 
+.end-credit a {
+  color: #ff2d78;
+  text-decoration: none;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 45, 120, 0.5);
+  padding-bottom: 2px;
+  transition: 0.2s;
+  text-shadow: 0 0 12px rgba(255, 45, 120, 0.65);
+}
+
+.reload {
+  background: linear-gradient(135deg, #ff2d78, #a855f7);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 14px 44px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow:
+    0 10px 30px rgba(255, 45, 120, 0.55),
+    0 0 40px rgba(168, 85, 247, 0.45);
+}
+
+.reload:active {
+  transform: scale(0.95);
+  box-shadow: 0 5px 15px rgba(255, 45, 120, 0.45);
+}
 
 /* ============================================================
    ANIMATIONS
-============================================================ */
-
-@keyframes rise{
-    from{
-        opacity:0;
-        transform:translateY(24px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
+   ============================================================ */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes fadeIn{
-    from{
-        opacity:0;
-    }
-
-    to{
-        opacity:1;
-    }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-.hidden{
-    display:none!important;
-}
-
+.hidden { display: none !important; }
 
 /* ============================================================
    RESPONSIVE
-============================================================ */
-
-@media(max-height:700px){
-
-    .stack{
-        gap:18px;
-        padding:14px 0;
-    }
-
-    .middle{
-        gap:22px;
-    }
-
-    .days-value{
-        font-size:
-            clamp(
-                76px,
-                22vw,
-                108px
-            );
-    }
-
-    .title{
-        font-size:46px;
-    }
-
-    .zero-value{
-        font-size:36px;
-    }
+   ============================================================ */
+@media (max-height: 700px) {
+  .stack { gap: 16px; padding: 12px 0; }
+  .middle { gap: 20px; }
+  .days-value { font-size: clamp(80px, 24vw, 112px); }
+  .title { font-size: 52px; }
+  .zero-value { font-size: 36px; }
 }
 
-@media(max-width:360px){
-
-    .app{
-        padding-left:24px;
-        padding-right:24px;
-    }
-
-    .title{
-        font-size:46px;
-    }
-
-    .days-value{
-        font-size:
-            clamp(
-                80px,
-                24vw,
-                116px
-            );
-    }
+@media (max-width: 380px) {
+  .app { padding-left: 22px; padding-right: 22px; }
+  .title { font-size: 52px; }
+  .days-value { font-size: clamp(84px, 26vw, 120px); }
+  .unit-value { font-size: 22px; }
 }
 
-@media(prefers-reduced-motion:reduce){
-
-    *,
-    *::before,
-    *::after{
-        animation-duration:.01ms!important;
-        animation-iteration-count:1!important;
-        transition-duration:.01ms!important;
-    }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 </style>
 </head>
-
-
 <body>
 
 <!-- ============================================================
-     STATIC VICE CITY BACKGROUND
-============================================================ -->
-
-<div class="sky">
-
-    <div class="sky-glow"></div>
-
-    <div class="city">
-
-        <div class="building">
-            <div class="windows"></div>
-        </div>
-
-        <div class="building">
-            <div class="windows"></div>
-        </div>
-
-        <div class="building">
-            <div class="windows"></div>
-        </div>
-
-        <div class="building">
-            <div class="windows"></div>
-        </div>
-
-        <div class="building">
-            <div class="windows"></div>
-        </div>
-
-        <div class="building">
-            <div class="windows"></div>
-        </div>
-
-        <div class="building">
-            <div class="windows"></div>
-        </div>
-
-        <div class="building">
-            <div class="windows"></div>
-        </div>
-
-    </div>
-
-    <div class="vignette"></div>
-
+     BACKGROUND
+     ============================================================ -->
+<div class="bg">
+  <div class="grid"></div>
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
 </div>
-
 
 <!-- ============================================================
      APP
-============================================================ -->
-
+     ============================================================ -->
 <div class="app" id="app">
+  <div class="stack">
 
-    <div class="stack">
+    <!-- HEADER -->
+    <div class="header" id="header">
+      <div class="brand">Grand Theft Auto</div>
+      <div class="title">VI</div>
+      <div class="subtitle">Vice City</div>
+    </div>
 
+    <!-- MIDDLE -->
+    <div class="middle">
 
-        <!-- HEADER -->
+      <!-- Days -->
+      <div class="days" id="daysBlock">
+        <div class="days-value" id="daysValue">0</div>
+        <div class="days-label">Days Remaining</div>
+      </div>
 
-        <div class="header" id="header">
-
-            <div class="brand">
-                Grand Theft Auto
-            </div>
-
-            <div class="title">
-                VI
-            </div>
-
-            <div class="subtitle">
-                Countdown
-            </div>
-
+      <!-- Zero-day -->
+      <div class="zero hidden" id="zeroBlock">
+        <div class="zero-cell">
+          <div class="zero-value" id="hoursZero">0</div>
+          <div class="zero-label">Hours</div>
         </div>
-
-
-        <!-- MIDDLE -->
-
-        <div class="middle">
-
-
-            <!-- DAYS -->
-
-            <div class="days" id="daysBlock">
-
-                <div
-                    class="days-value"
-                    id="daysValue"
-                >
-                    0
-                </div>
-
-                <div class="days-label">
-                    Days Remaining
-                </div>
-
-            </div>
-
-
-            <!-- ZERO -->
-
-            <div
-                class="zero hidden"
-                id="zeroBlock"
-            >
-
-                <div class="zero-cell">
-
-                    <div
-                        class="zero-value"
-                        id="hoursZero"
-                    >
-                        0
-                    </div>
-
-                    <div class="zero-label">
-                        Hours
-                    </div>
-
-                </div>
-
-
-                <div class="zero-cell">
-
-                    <div
-                        class="zero-value"
-                        id="minutesZero"
-                    >
-                        00
-                    </div>
-
-                    <div class="zero-label">
-                        Minutes
-                    </div>
-
-                </div>
-
-
-                <div class="zero-cell">
-
-                    <div
-                        class="zero-value"
-                        id="secondsZero"
-                    >
-                        00
-                    </div>
-
-                    <div class="zero-label">
-                        Seconds
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- HOURS / MINUTES / SECONDS -->
-
-            <div
-                class="units"
-                id="unitsRow"
-            >
-
-                <div class="unit">
-
-                    <div
-                        class="unit-value"
-                        id="hoursValue"
-                    >
-                        0
-                    </div>
-
-                    <div class="unit-label">
-                        Hours
-                    </div>
-
-                </div>
-
-
-                <div class="unit">
-
-                    <div
-                        class="unit-value"
-                        id="minutesValue"
-                    >
-                        00
-                    </div>
-
-                    <div class="unit-label">
-                        Minutes
-                    </div>
-
-                </div>
-
-
-                <div class="unit">
-
-                    <div
-                        class="unit-value"
-                        id="secondsValue"
-                    >
-                        00
-                    </div>
-
-                    <div class="unit-label">
-                        Seconds
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- PROGRESS -->
-
-            <div
-                class="progress"
-                id="progressBlock"
-            >
-
-                <div class="progress-header">
-
-                    <div class="progress-label">
-                        Progress
-                    </div>
-
-                    <div
-                        class="progress-value"
-                        id="percentText"
-                    >
-                        0.00%
-                    </div>
-
-                </div>
-
-                <div class="progress-track">
-
-                    <div
-                        class="progress-fill"
-                        id="progressFill"
-                    ></div>
-
-                </div>
-
-            </div>
-
+        <div class="zero-cell">
+          <div class="zero-value" id="minutesZero">00</div>
+          <div class="zero-label">Minutes</div>
         </div>
-
-
-        <!-- ONLY DATES -->
-
-        <div
-            class="footer"
-            id="footer"
-        >
-
-            <span class="from">
-                Dec 4, 2023
-            </span>
-
-            <span class="arrow">
-                —
-            </span>
-
-            <span class="to">
-                Nov 19, 2026
-            </span>
-
+        <div class="zero-cell">
+          <div class="zero-value" id="secondsZero">00</div>
+          <div class="zero-label">Seconds</div>
         </div>
+      </div>
+
+      <!-- Units -->
+      <div class="units" id="unitsRow">
+        <div class="unit">
+          <div class="unit-value" id="hoursValue">0</div>
+          <div class="unit-label">Hours</div>
+        </div>
+        <div class="unit">
+          <div class="unit-value" id="minutesValue">00</div>
+          <div class="unit-label">Minutes</div>
+        </div>
+        <div class="unit">
+          <div class="unit-value" id="secondsValue">00</div>
+          <div class="unit-label">Seconds</div>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress" id="progressBlock">
+        <div class="progress-header">
+          <div class="progress-label">Progress</div>
+          <div class="progress-value" id="percentText">0.00%</div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
 
     </div>
 
-</div>
+    <!-- FOOTER -->
+    <div class="footer" id="footer">
+      <span class="from">Dec 4, 2023</span>
+      <span class="arrow">—</span>
+      <span class="to">Nov 19, 2026</span>
+    </div>
 
+  </div>
+</div>
 
 <!-- ============================================================
      END SCREEN
-============================================================ -->
-
-<div
-    class="end hidden"
-    id="endScreen"
->
-
-    <div class="end-title">
-        Welcome
-    </div>
-
-    <div class="end-sub">
-        to Vice City
-    </div>
-
-    <button
-        class="reload"
-        id="reloadBtn"
-    >
-        Reload
-    </button>
-
+     ============================================================ -->
+<div class="end hidden" id="endScreen">
+  <div class="end-title">Welcome</div>
+  <div class="end-sub">to Vice City</div>
+  <div class="end-credit">
+    Countdown crafted by
+    <a href="https://t.me/GameBadNews" target="_blank" rel="noopener noreferrer">GameBadNews</a>
+  </div>
+  <button class="reload" id="reloadBtn">Reload</button>
 </div>
 
-
 <script>
+(function () {
+  'use strict';
 
-(function(){
+  const makeDate = (y, m, d) => new Date(y, m, d, 0, 0, 0);
 
-    "use strict";
+  const START = makeDate(2023, 11, 4);
+  const END   = makeDate(2026, 10, 19);
+  const TOTAL = END - START;
 
+  const $ = (id) => document.getElementById(id);
 
-    /* ========================================================
-       DATES
-    ======================================================== */
+  const el = {
+    header:       $('header'),
+    daysBlock:    $('daysBlock'),
+    zeroBlock:    $('zeroBlock'),
+    unitsRow:     $('unitsRow'),
+    progressBlk:  $('progressBlock'),
+    footer:       $('footer'),
+    daysValue:    $('daysValue'),
+    hoursValue:   $('hoursValue'),
+    minutesValue: $('minutesValue'),
+    secondsValue: $('secondsValue'),
+    hoursZero:    $('hoursZero'),
+    minutesZero:  $('minutesZero'),
+    secondsZero:  $('secondsZero'),
+    progressFill: $('progressFill'),
+    percentText:  $('percentText'),
+    endScreen:    $('endScreen'),
+    app:          $('app')
+  };
 
-    const START =
-        new Date(
-            2023,
-            11,
-            4,
-            0,
-            0,
-            0
-        );
+  let timerId = null;
+  let finished = false;
 
-    const END =
-        new Date(
-            2026,
-            10,
-            19,
-            0,
-            0,
-            0
-        );
+  const pad = (n) => String(n).padStart(2, '0');
 
-    const TOTAL =
-        END - START;
+  function breakdown(totalSec) {
+    totalSec = Math.max(0, Math.floor(totalSec));
+    return {
+      days:    Math.floor(totalSec / 86400),
+      hours:   Math.floor(totalSec / 3600),
+      minutes: Math.floor((totalSec % 3600) / 60),
+      seconds: totalSec % 60
+    };
+  }
 
+  function progressPct(now) {
+    if (now <= START) return 0;
+    if (now >= END)   return 100;
+    return ((now - START) / TOTAL) * 100;
+  }
 
-    /* ========================================================
-       ELEMENTS
-    ======================================================== */
+  function render() {
+    if (finished) return;
 
-    const $ =
-        id => document.getElementById(id);
+    const now = new Date();
 
-    const app =
-        $("app");
-
-    const header =
-        $("header");
-
-    const daysBlock =
-        $("daysBlock");
-
-    const zeroBlock =
-        $("zeroBlock");
-
-    const unitsRow =
-        $("unitsRow");
-
-    const progressBlock =
-        $("progressBlock");
-
-    const footer =
-        $("footer");
-
-    const daysValue =
-        $("daysValue");
-
-    const hoursValue =
-        $("hoursValue");
-
-    const minutesValue =
-        $("minutesValue");
-
-    const secondsValue =
-        $("secondsValue");
-
-    const hoursZero =
-        $("hoursZero");
-
-    const minutesZero =
-        $("minutesZero");
-
-    const secondsZero =
-        $("secondsZero");
-
-    const progressFill =
-        $("progressFill");
-
-    const percentText =
-        $("percentText");
-
-    const endScreen =
-        $("endScreen");
-
-
-    let timer = null;
-
-    let finished = false;
-
-
-    /* ========================================================
-       HELPERS
-    ======================================================== */
-
-    const pad =
-        number =>
-            String(number).padStart(2,"0");
-
-
-    function breakdown(seconds){
-
-        seconds =
-            Math.max(
-                0,
-                Math.floor(seconds)
-            );
-
-        return {
-
-            days:
-                Math.floor(
-                    seconds / 86400
-                ),
-
-            hours:
-                Math.floor(
-                    seconds / 3600
-                ),
-
-            minutes:
-                Math.floor(
-                    (seconds % 3600) / 60
-                ),
-
-            seconds:
-                seconds % 60
-        };
+    if (now >= END) {
+      finished = true;
+      if (timerId) clearInterval(timerId);
+      el.app.style.display = 'none';
+      el.endScreen.classList.remove('hidden');
+      return;
     }
 
+    const sec = (END - now) / 1000;
+    const { days, hours, minutes, seconds } = breakdown(sec);
+    const pct = progressPct(now);
 
-    function progress(now){
+    el.progressFill.style.width = pct + '%';
+    el.percentText.textContent  = pct.toFixed(2) + '%';
 
-        if(now <= START)
-            return 0;
+    if (days > 0) {
+      el.daysBlock.classList.remove('hidden');
+      el.zeroBlock.classList.add('hidden');
+      el.unitsRow.classList.remove('hidden');
+      el.progressBlk.classList.remove('hidden');
+      el.header.classList.remove('hidden');
+      el.footer.classList.remove('hidden');
 
-        if(now >= END)
-            return 100;
+      el.daysValue.textContent    = days.toLocaleString();
+      el.hoursValue.textContent   = hours.toLocaleString();
+      el.minutesValue.textContent = pad(minutes);
+      el.secondsValue.textContent = pad(seconds);
+    } else {
+      el.daysBlock.classList.add('hidden');
+      el.zeroBlock.classList.remove('hidden');
+      el.unitsRow.classList.add('hidden');
+      el.progressBlk.classList.add('hidden');
+      el.header.classList.add('hidden');
+      el.footer.classList.add('hidden');
 
-        return (
-            (now - START) /
-            TOTAL
-        ) * 100;
+      el.hoursZero.textContent   = hours.toLocaleString();
+      el.minutesZero.textContent = pad(minutes);
+      el.secondsZero.textContent = pad(seconds);
     }
+  }
 
+  $('reloadBtn').addEventListener('click', () => window.location.reload());
+  document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
 
-    /* ========================================================
-       UPDATE
-    ======================================================== */
+  function start() {
+    render();
+    timerId = setInterval(render, 1000);
+  }
 
-    function update(){
-
-        if(finished)
-            return;
-
-
-        const now =
-            new Date();
-
-
-        /* Finished */
-
-        if(now >= END){
-
-            finished = true;
-
-            if(timer)
-                clearInterval(timer);
-
-            app.style.display =
-                "none";
-
-            endScreen
-                .classList
-                .remove("hidden");
-
-            return;
-        }
-
-
-        const remaining =
-            (END - now) / 1000;
-
-
-        const {
-            days,
-            hours,
-            minutes,
-            seconds
-        } =
-            breakdown(
-                remaining
-            );
-
-
-        const pct =
-            progress(now);
-
-
-        /* Progress */
-
-        progressFill.style.width =
-            pct + "%";
-
-        percentText.textContent =
-            pct.toFixed(2) + "%";
-
-
-        /* ====================================================
-           NORMAL
-        ==================================================== */
-
-        if(days > 0){
-
-            daysBlock
-                .classList
-                .remove("hidden");
-
-            zeroBlock
-                .classList
-                .add("hidden");
-
-            unitsRow
-                .classList
-                .remove("hidden");
-
-            progressBlock
-                .classList
-                .remove("hidden");
-
-            header
-                .classList
-                .remove("hidden");
-
-            footer
-                .classList
-                .remove("hidden");
-
-
-            daysValue.textContent =
-                days.toLocaleString(
-                    "en-US"
-                );
-
-            hoursValue.textContent =
-                hours.toLocaleString(
-                    "en-US"
-                );
-
-            minutesValue.textContent =
-                pad(minutes);
-
-            secondsValue.textContent =
-                pad(seconds);
-
-        }
-
-
-        /* ====================================================
-           LAST DAY
-        ==================================================== */
-
-        else{
-
-            daysBlock
-                .classList
-                .add("hidden");
-
-            zeroBlock
-                .classList
-                .remove("hidden");
-
-            unitsRow
-                .classList
-                .add("hidden");
-
-            progressBlock
-                .classList
-                .add("hidden");
-
-            header
-                .classList
-                .add("hidden");
-
-            footer
-                .classList
-                .add("hidden");
-
-
-            hoursZero.textContent =
-                hours.toLocaleString(
-                    "en-US"
-                );
-
-            minutesZero.textContent =
-                pad(minutes);
-
-            secondsZero.textContent =
-                pad(seconds);
-        }
-    }
-
-
-    /* ========================================================
-       START
-    ======================================================== */
-
-    function start(){
-
-        update();
-
-        timer =
-            setInterval(
-                update,
-                1000
-            );
-    }
-
-
-    $("reloadBtn")
-        .addEventListener(
-            "click",
-            () => location.reload()
-        );
-
-
-    document.addEventListener(
-        "dblclick",
-        event =>
-            event.preventDefault(),
-        {
-            passive:false
-        }
-    );
-
-
-    window.addEventListener(
-        "load",
-        start
-    );
-
+  window.addEventListener('load', start);
 })();
-
 </script>
 
 </body>
