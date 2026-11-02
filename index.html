@@ -727,13 +727,6 @@ body {
 
     </div>
 
-    <!-- FOOTER -->
-    <div class="footer" id="footer">
-      <span class="from">Dec 4, 2023</span>
-      <span class="arrow">—</span>
-      <span class="to">Nov 19, 2026</span>
-    </div>
-
   </div>
 </div>
 
@@ -768,7 +761,6 @@ body {
     zeroBlock:    $('zeroBlock'),
     unitsRow:     $('unitsRow'),
     progressBlk:  $('progressBlock'),
-    footer:       $('footer'),
     daysValue:    $('daysValue'),
     hoursValue:   $('hoursValue'),
     minutesValue: $('minutesValue'),
@@ -829,7 +821,6 @@ body {
       el.unitsRow.classList.remove('hidden');
       el.progressBlk.classList.remove('hidden');
       el.header.classList.remove('hidden');
-      el.footer.classList.remove('hidden');
 
       el.daysValue.textContent    = days.toLocaleString();
       el.hoursValue.textContent   = hours.toLocaleString();
@@ -841,7 +832,6 @@ body {
       el.unitsRow.classList.add('hidden');
       el.progressBlk.classList.add('hidden');
       el.header.classList.add('hidden');
-      el.footer.classList.add('hidden');
 
       el.hoursZero.textContent   = hours.toLocaleString();
       el.minutesZero.textContent = pad(minutes);
